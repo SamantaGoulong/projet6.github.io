@@ -6,7 +6,6 @@ fetch("http://localhost:5678/api/works")
   .then((projetHtml) => {
     // regarder ce qu'on reçoit pour bien cibler l'objet
    createHtml(projetHtml)
-   
   })
  
   // Gestion d'erreur IMPORTANT
@@ -29,18 +28,42 @@ function createHtml(projetHtml) {
 //création de la balise "img" + source + filiation
     const imageElement = document.createElement("img");
     imageElement.src = projetHtml[index].imageUrl;
-    console.log(imageElement);
+    //console.log(imageElement);
         figureElement.appendChild(imageElement)
 //création de la balise "figcaption" + texte + filiation
     const textElement = document.createElement("figcaption"); 
-    textElement.innerText = projetHtml[index].title;
-    console.log(textElement);
+    textElement.textContent = projetHtml[index].title;
+    // console.log(textElement);
         figureElement.appendChild(textElement)
   }
 }
 
+fetch("http://localhost:5678/api/categories")
+.then((res) => res.json())
+  .then((buttonHtml) => {
+   createButton(buttonHtml)
+  })
+  .catch((error) => {
+    return error;
+  });
+  
 
+function createButton(buttonHtml) {
 
+  let buttons = document.querySelector(".buttons");
+  
+  for (let i = 0; i < buttonHtml.length; i++) {
+    console.log(buttonHtml);
+
+  let buttonFilter = document.createElement("button");
+    console.log(buttons);
+    
+  buttonFilter.classList.add("filtre");
+  
+     buttonFilter.textContent  = buttonHtml[i].name;
+      buttons.appendChild(buttonFilter);
+  }
+}
 
 
 
