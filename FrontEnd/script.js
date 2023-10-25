@@ -24,6 +24,8 @@ function createHtml(projetHtml) {
   for (let index = 0; index < projetHtml.length; index++) { 
 //création de la balise "figure" + filiation
     const figureElement = document.createElement("figure");
+    figureElement.classList.add("figureContainer")
+    figureElement.setAttribute("data-id", projetHtml[index].categoryId)
         gallery.appendChild(figureElement)
 //création de la balise "img" + source + filiation
     const imageElement = document.createElement("img");
@@ -46,27 +48,43 @@ fetch("http://localhost:5678/api/categories")
   .catch((error) => {
     return error;
   });
-  
 
-function createButton(buttonHtml) {
 
-  let buttons = document.querySelector(".buttons");
-  
-  for (let i = 0; i < buttonHtml.length; i++) {
-    console.log(buttonHtml);
 
-  let buttonFilter = document.createElement("button");
-    console.log(buttons);
     
-  buttonFilter.classList.add("filtre");
-  
-     buttonFilter.textContent  = buttonHtml[i].name;
-      buttons.appendChild(buttonFilter);
+function createButton(buttonHtml) {
+  let buttons = document.querySelector(".buttons");
+
+  for (let i = 0; i < buttonHtml.length; i++) {
+    let buttonFilter = document.createElement("button");
+    buttonFilter.classList.add("filtre");
+    buttonFilter.textContent = buttonHtml[i].name;
+
+    
+buttonFilter.addEventListener('click', function () {
+         
+  let buttonDataId = buttonHtml[i].id;
+console.log(buttonDataId);
+
+  let figures = document.getElementsByClassName("figureContainer");
+  const figureTab = Array.from(figures);
+
+  for (let ind = 0; ind < figureTab.length; ind++) {
+   
+    if (buttonDataId == figureTab[ind].dataset.id) {
+      figureTab[ind].style.display = "block";
+
+    } else {
+      figureTab[ind].style.display = "none";
+    }
+    
   }
+});
+ buttons.appendChild(buttonFilter);
 }
+  }
 
-
-
+ 
 
 
 
