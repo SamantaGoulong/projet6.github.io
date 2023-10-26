@@ -77,16 +77,22 @@ console.log(buttonDataId);
     } else {
       figureTab[ind].style.display = "none";
     }
-    
   }
 });
- buttons.appendChild(buttonFilter);
+    buttons.appendChild(buttonFilter);
 }
-  }
+}
 
+//filtre TOUS
+  let tous = document.getElementById("tous");
+console.log(tous);
+
+tous.addEventListener('click', function () {
  
+  let figures = document.querySelectorAll("figure");
+  console.log(figures);
 
-
-
-
-
+  for (let a = 0; a < figures.length; a++) {
+     figures[a].style.display = "block";
+  }
+})
