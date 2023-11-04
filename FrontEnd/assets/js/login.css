@@ -191,6 +191,9 @@ li:hover {
     color: #B1663C;
 }
 
+#log {
+    font-weight: bold;
+}
 
 #login {
     width: 50%;
@@ -242,7 +245,6 @@ input[type="submit"] {
 a{
     display: flex;
     justify-content: center;
-    text-decoration: none;
     color: black;
 }
 
