@@ -104,6 +104,12 @@ li:hover {
 	color: black;
 }
 
+#logout {
+	text-decoration: none;
+	color: black;
+   /* display: none; */
+}
+
 #introduction {
 	display: flex;
 	align-items: center;
@@ -127,10 +133,29 @@ li:hover {
 #introduction p {
 	margin-bottom: 0.5em;
 }
-#portfolio h2 {
-	text-align: center;
+
+.projet {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	margin-bottom: 1em;
 }
+
+/* #portfolio h2 {
+	text-align: center;
+	margin-bottom: 1em;
+} */
+
+ .fa-pen-to-square{
+	padding-left: 30px;
+	/* display: none; */
+}
+
+.modifier{
+	padding-left: 10px;
+	/* display: none; */
+} 
+
 .buttons {
 	display: flex;
 	align-items: center;
@@ -215,6 +240,117 @@ input[type="submit"]{
 	width: 180px;
 	text-align: center;
 	border-radius: 60px ;
+}
+
+.modal-btn{
+	border: none;
+	background: #fff;
+	display: flex;
+	/* padding: 10px 14px;
+	font-size: 18px;
+	margin: 100px auto;
+	display: block;
+	min-width: 150px; */
+	cursor: pointer;
+}
+
+.modal-container{
+	display: none;
+	position: fixed;
+	top: 0; right: 0; bottom: 0; left: 0;
+	width: 100vw;
+	height: 100vh;
+}
+
+.modal-container.active{
+	display: block;
+}
+.overlay{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background:#333333d3;
+}
+
+.modal{
+	width: 95%;
+	max-width: 500px;
+	min-width: 300px;
+	padding: 30px 100px 30px 100px;
+	background: #fff;
+	border-radius: 10px;
+	position: absolute;
+	top: 40%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+.close-modal{
+	padding: 8px 10px;
+	border: none;
+	border-radius: 5px;
+	font-size: 18px;
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	cursor: pointer;
+	background:white;
+	color:black;
+}
+
+.modal h2{
+	margin: 30px 0px 30px 0px;
+	color: black;
+	display: flex;
+	justify-content: center;
+	font-family: 'Work Sans';
+	font-weight: 500;
+}
+
+.gallery-modal{
+	width: 100%;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+	grid-column-gap: 10px;
+	grid-row-gap: 30px;
+	padding-bottom: 50px;
+	border-bottom: 1px solid #979797;
+}
+
+.gallery-modal img{
+	width: 100%;
+}
+.photoModal{
+	display: flex;
+}
+
+.trash{
+	width: 25px;
+	height: 25px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: black;
+	border-radius: 5px;
+	position: relative;
+	top: 5px; right: 30px;
+	border-style: none;
+	cursor: pointer;
+}
+.fa-trash-can{
+	color: #fff;
+}
+
+#btn-ajouter{
+width: 200px;
+background: #1D6154;
+color: #fff;
+margin-top: 35px;
+	cursor: pointer;
 }
 
 footer nav ul {

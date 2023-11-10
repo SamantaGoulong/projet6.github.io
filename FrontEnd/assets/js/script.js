@@ -5,8 +5,9 @@ fetch("http://localhost:5678/api/works")
   // On peut utiliser les data
   .then((projetHtml) => {
     // regarder ce qu'on reçoit pour bien cibler l'objet
-   createHtml(projetHtml)
-  })
+    createHtml(projetHtml)
+   
+    })
  
   // Gestion d'erreur IMPORTANT
   .catch((error) => {
@@ -43,7 +44,7 @@ function createHtml(projetHtml) {
 fetch("http://localhost:5678/api/categories")
 .then((res) => res.json())
   .then((buttonHtml) => {
-   createButton(buttonHtml)
+    createButton(buttonHtml)
   })
   .catch((error) => {
     return error;
@@ -64,7 +65,7 @@ function createButton(buttonHtml) {
 buttonFilter.addEventListener('click', function () {
          
   let buttonDataId = buttonHtml[i].id;
-console.log(buttonDataId);
+//console.log(buttonDataId);
 
   let figures = document.getElementsByClassName("figureContainer");
   const figureTab = Array.from(figures);
@@ -85,14 +86,96 @@ console.log(buttonDataId);
 
 //filtre TOUS
   let tous = document.getElementById("tous");
-console.log(tous);
+//console.log(tous);
 
 tous.addEventListener('click', function () {
  
   let figures = document.querySelectorAll("figure");
-  console.log(figures);
+  //console.log(figures);
 
   for (let a = 0; a < figures.length; a++) {
      figures[a].style.display = "block";
   }
 })
+
+// pour le modal
+const modalContainer = document.querySelector(".modal-container");
+// console.log(modalContainer);
+const modalTriggers = document.querySelectorAll(".modal-trigger");
+// console.log(modalTriggers);
+modalTriggers.forEach(trigger => trigger.addEventListener("click", toggleModal))
+
+function toggleModal() {
+  modalContainer.classList.toggle("active")
+}
+
+
+
+
+//creation contenu et affichage modal
+
+fetch("http://localhost:5678/api/works")
+  // On transforme les data en Json
+  .then((res) => res.json())
+  // On peut utiliser les data
+  .then((projetGalleryModal) => {
+    createGalleryModal(projetGalleryModal);
+    delatePictureModal();
+  })
+  
+.catch((error) => {
+    return error;
+});
+  
+
+function createGalleryModal(projetGalleryModal) {
+  
+  let galleryModal = document.querySelector(".gallery-modal")
+//console.log(galleryModal);
+
+  for (let index = 0; index < projetGalleryModal.length; index++) {
+  
+const galleryElement = document.createElement("figure")
+galleryElement.classList.add("photoModal")
+//console.log(galleryElement);
+galleryModal.appendChild(galleryElement)
+
+const imageModal = document.createElement("img")
+imageModal.src = projetGalleryModal[index].imageUrl;
+galleryElement.appendChild(imageModal)
+
+const btnTrash = document.createElement("button")
+btnTrash.classList.add("trash")
+galleryElement.appendChild(btnTrash)
+
+const iconeTrash = document.createElement("i")
+iconeTrash.classList.add("fa-solid")
+iconeTrash.classList.add("fa-trash-can")
+    btnTrash.appendChild(iconeTrash)
+  }
+
+const modal = document.querySelector(".modal")
+//console.log(modal);
+const boutonAjouter = document.createElement("button")
+boutonAjouter.classList.add("filtre")
+boutonAjouter.setAttribute("id","btn-ajouter")
+  modal.appendChild(boutonAjouter)
+  
+boutonAjouter.innerHTML="Ajouter une photo"
+}
+// fin creation et affichage modal
+
+
+
+
+
+
+
+
+
+function delatePictureModal() {
+
+  const trash = document.querySelectorAll(".trash")
+  console.log(trash);
+
+}
