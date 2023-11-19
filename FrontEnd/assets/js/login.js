@@ -1,4 +1,3 @@
-
 let action = document.getElementById("action");
 let emailHtml = document.getElementById("email");
 let password = document.getElementById("password");
@@ -13,56 +12,7 @@ function createLogin() {
     const mail = emailHtml.value;
     //  console.log(mail);
     const pass = password.value;
-console.log(pass);
-
-//     fetch("http://localhost:5678/api/users/login", {
-//       method: "POST",
-//       headers: { "Content-type": "application/json" },
-//       body: JSON.stringify({
-//         "email": mail,
-//         "password": pass
-//       })
-//     })
-//       .then((res) => res.json())
-//       .then((data) => {
-//         if (data.message != null) {
-//           console.log("correcte");
-//           messageErreur.style.display = "block";
-//           return
-//         }
-        
-//         // if (Response.status !== 200)
-//         // {
-//         //   throw new Error (response.status)
-//         // }
-//       //   if (data.token =  ) {
-//       //   console.log("pas correcte");
-//       //    messageErreur.style.display = "block";
-//       // }
-//             window.localStorage.setItem("Token", data.token);
-//             console.log(data.token);
-//             window.location.href = "/FrontEnd/index.html"
-//           messageErreur.style.display = "none";
-        
-//       })
-
-//       .catch((error) => {
-//         console.error(error);
-//       });
-//   });
-// }
-
-// createLogin();
-
-
-
-// let action = document.getElementById("action")
-// let error = document.createElement("p");
-// error.classList.add("error");
-// action.appendChild(error);
-
-
-
+//console.log(pass);
 
     fetch("http://localhost:5678/api/users/login", {
       method: "POST",
@@ -79,31 +29,20 @@ console.log(pass);
     return response.json(); // Convertit la réponse JSON en objet JavaScript
       })
       .then(data => {
-// const token = data.token;
-//     console.log("Token récupéré :", token);
-
-        // if (data.message != null) {
-        //   console.log("correcte");
-        //   messageErreur.style.display = "block";
-        //   return;
-        // }
-        
-        if (data.token === pass ) {
-        // console.log("correcte");
-        //  messageErreur.style.display = "block";
+         if (!data.token) {
+        // //  console.log(data.token);
+         messageErreur.style.display = "block";
         }
         else {
-          window.localStorage.setItem("Token", data.token);
-        //     console.log(data.token);
-        window.location.href = "/FrontEnd/index.html";
-        //   messageErreur.style.display = "none";
-         }
+        window.localStorage.setItem("Token", data.token);
+        // // //     console.log(data.token);
+         window.location.href = "/FrontEnd/index.html";
+        }
       })
-
       .catch((error) => {
-        console.error(error);
+        //console.error(error);
       });
   });
 }
-
 createLogin();
+

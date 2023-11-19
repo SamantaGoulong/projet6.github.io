@@ -1,21 +1,20 @@
-// On fetch sur l'url
-fetch("http://localhost:5678/api/works")
-  // On transforme les data en Json
-  .then((res) => res.json())
-  // On peut utiliser les data
-  .then((projetHtml) => {
-    // regarder ce qu'on reçoit pour bien cibler l'objet
-    createHtml(projetHtml)
-   
-    })
- 
-  // Gestion d'erreur IMPORTANT
-  .catch((error) => {
-    // Si erreur dans URL, retourne l'erreur pour pas bloquer la création de la page
-    return error;
-    // OU mieux : créer une fonction qui affiche l'erreur dans une modal, un coin du site...
-  });
-
+function getData(url) {
+  // return permet de retourner le résultat vers la ligne 7
+  return (
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        return data;
+        
+      })
+      // Gestion d'erreur IMPORTANT
+      .catch((error) => {
+        // Si erreur dans URL, retourne l'erreur pour pas bloquer la création de la page
+        return error;
+        // OU mieux : créer une fonction qui affiche l'erreur dans une modal, un coin du site...
+      })
+  );
+}
 
 //Création de la fonction "createHtml" avec pour parametre "projetHtml"
 function createHtml(projetHtml) {
@@ -27,6 +26,7 @@ function createHtml(projetHtml) {
     const figureElement = document.createElement("figure");
     figureElement.classList.add("figureContainer")
     figureElement.setAttribute("data-id", projetHtml[index].categoryId)
+        figureElement.setAttribute("photo-id", projetHtml[index].id)
         gallery.appendChild(figureElement)
 //création de la balise "img" + source + filiation
     const imageElement = document.createElement("img");
@@ -41,18 +41,7 @@ function createHtml(projetHtml) {
   }
 }
 
-fetch("http://localhost:5678/api/categories")
-.then((res) => res.json())
-  .then((buttonHtml) => {
-    createButton(buttonHtml)
-  })
-  .catch((error) => {
-    return error;
-  });
 
-
-
-    
 function createButton(buttonHtml) {
   let buttons = document.querySelector(".buttons");
 
@@ -78,11 +67,125 @@ buttonFilter.addEventListener('click', function () {
     } else {
       figureTab[ind].style.display = "none";
     }
+
   }
+  
 });
+  // debut suppression des boutons filtres en cas de token
+     if (token) {
+ buttonFilter.style.display = "none";   
+    }
+// fin suppression des boutons filtres en cas de token
+    
     buttons.appendChild(buttonFilter);
 }
+}  
+
+
+//creation contenu et affichage modale
+ async function createGalleryModal(projetGalleryModal) {
+  
+  let galleryModal = document.querySelector(".gallery-modal")
+
+  for (let index = 0; index < projetGalleryModal.length; index++) {
+    
+    const galleryElement = document.createElement("figure")
+    galleryElement.classList.add("photoModal")
+    galleryElement.setAttribute("data-id", projetGalleryModal[index].id);
+
+      galleryModal.appendChild(galleryElement)
+
+    const imageModal = document.createElement("img")
+      imageModal.src = projetGalleryModal[index].imageUrl;
+      imageModal.setAttribute("image-id", projetGalleryModal[index].id)
+      galleryElement.appendChild(imageModal)
+
+    const btnTrash = document.createElement("button")
+      btnTrash.classList.add("trash")
+      galleryElement.appendChild(btnTrash)
+
+    const iconeTrash = document.createElement("i")
+      iconeTrash.classList.add("fa-solid")
+      iconeTrash.classList.add("fa-trash-can")
+    btnTrash.appendChild(iconeTrash)
+    
+    btnTrash.addEventListener("click", function (e) {
+      e.preventDefault();
+      const figureToDelete = document.querySelector(`.figureContainer[data-id="${projetGalleryModal[index].categoryId}"]`);
+
+      deleteData(`http://localhost:5678/api/works/${projetGalleryModal[index].id}`).then((result) => {
+        console.log(result);
+        if (result) {
+          figureToDelete.remove();
+          galleryElement.remove();
+        }
+      });
+       
+    
+    })
+  
+  }
+
+    const modal = document.querySelector(".modal")
+    const boutonAjouter = document.createElement("button")
+      boutonAjouter.classList.add("filtre")
+      boutonAjouter.setAttribute("id", "btn-ajouter")
+      boutonAjouter.innerHTML = "Ajouter une photo"
+      modal.appendChild(boutonAjouter)
+  
+  // suppression des figures au clique
+  
 }
+// fin creation et affichage modale
+
+async function homePage() {
+  works = await getData("http://localhost:5678/api/works");
+  category = await getData("http://localhost:5678/api/categories");
+  createButton(category);
+  createHtml(works);
+  createGalleryModal(works);
+}  
+homePage();
+
+
+
+function deleteData(url) {
+  
+  return (
+    fetch(url,
+      {
+        method: 'DELETE',
+        headers: { 
+          'Content-type': 'application/json',
+            'Authorization':`Bearer ${localStorage.getItem("Token")}`,
+            
+        },
+      }) 
+      .then((res) => res)
+      .then((data) => {
+        console.log(data);
+        if (data.status != 204) {
+          return false
+          
+        }
+        return true
+        // return data;
+       
+      })
+      // Gestion d'erreur IMPORTANT
+      .catch((error) => {
+        console.log(error);
+        // Si erreur dans URL, retourne l'erreur pour pas bloquer la création de la page
+        return error;
+        // OU mieux : créer une fonction qui affiche l'erreur dans une modal, un coin du site...
+      })
+  );
+}
+
+
+
+
+
 
 //filtre TOUS
   let tous = document.getElementById("tous");
@@ -98,7 +201,44 @@ tous.addEventListener('click', function () {
   }
 })
 
-// pour le modal
+
+// debut deco/reco login logout
+let token = localStorage.getItem("Token");
+//console.log(token);
+
+let login = document.getElementById("log")
+//console.log(login)
+
+if (token) {
+  login.innerHTML = "logout"
+}
+
+login.addEventListener('click', function () { 
+ localStorage.removeItem("Token");
+   //console.log('Token supprimé avec succès.');
+});
+// fin deco/reco login logout
+
+//debut affichage bouton modifier
+let boutonModifier = document.querySelector(".modal-btn")
+if (!token) {
+  boutonModifier.style.display = "none";
+}
+// fin affichage bouton modifier
+
+
+
+// debut suppression bouton TOUS si token
+let btnTous = document.querySelector(".filtre")
+  //console.log(btnTous);
+  if (token) {
+    btnTous.style.display = "none";
+  }
+// fin suppression bouton TOUS token
+
+
+
+// pour le modale
 const modalContainer = document.querySelector(".modal-container");
 // console.log(modalContainer);
 const modalTriggers = document.querySelectorAll(".modal-trigger");
@@ -107,75 +247,4 @@ modalTriggers.forEach(trigger => trigger.addEventListener("click", toggleModal))
 
 function toggleModal() {
   modalContainer.classList.toggle("active")
-}
-
-
-
-
-//creation contenu et affichage modal
-
-fetch("http://localhost:5678/api/works")
-  // On transforme les data en Json
-  .then((res) => res.json())
-  // On peut utiliser les data
-  .then((projetGalleryModal) => {
-    createGalleryModal(projetGalleryModal);
-    delatePictureModal();
-  })
-  
-.catch((error) => {
-    return error;
-});
-  
-
-function createGalleryModal(projetGalleryModal) {
-  
-  let galleryModal = document.querySelector(".gallery-modal")
-//console.log(galleryModal);
-
-  for (let index = 0; index < projetGalleryModal.length; index++) {
-  
-const galleryElement = document.createElement("figure")
-galleryElement.classList.add("photoModal")
-//console.log(galleryElement);
-galleryModal.appendChild(galleryElement)
-
-const imageModal = document.createElement("img")
-imageModal.src = projetGalleryModal[index].imageUrl;
-galleryElement.appendChild(imageModal)
-
-const btnTrash = document.createElement("button")
-btnTrash.classList.add("trash")
-galleryElement.appendChild(btnTrash)
-
-const iconeTrash = document.createElement("i")
-iconeTrash.classList.add("fa-solid")
-iconeTrash.classList.add("fa-trash-can")
-    btnTrash.appendChild(iconeTrash)
-  }
-
-const modal = document.querySelector(".modal")
-//console.log(modal);
-const boutonAjouter = document.createElement("button")
-boutonAjouter.classList.add("filtre")
-boutonAjouter.setAttribute("id","btn-ajouter")
-  modal.appendChild(boutonAjouter)
-  
-boutonAjouter.innerHTML="Ajouter une photo"
-}
-// fin creation et affichage modal
-
-
-
-
-
-
-
-
-
-function delatePictureModal() {
-
-  const trash = document.querySelectorAll(".trash")
-  console.log(trash);
-
 }
