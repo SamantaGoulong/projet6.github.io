@@ -133,17 +133,58 @@ buttonFilter.addEventListener('click', function () {
       boutonAjouter.innerHTML = "Ajouter une photo"
       modal.appendChild(boutonAjouter)
   
-  // suppression des figures au clique
-  
+   // debut activation bouton ajouter
+   const modal1 = document.querySelector(".modal1")
+   const modal2 = document.querySelector(".modal2")
+   
+   boutonAjouter.addEventListener("click", function () {
+     modal1.style.display = "none";
+     boutonAjouter.style.display = "none";
+     modal2.style.display = "block";
+     valider.style.display = "block";
+})
+   // fin activation bouton ajouter
+
+
+   // debut activation bouton retour
+   const arrow = document.querySelector(".arrow");
+   const valider = document.getElementById("valider")
+     arrow.addEventListener("click", function () {
+       modal2.style.display = "none";
+       valider.style.display = "none";
+       modal1.style.display = "block";
+       boutonAjouter.style.display = "block";
+})
+   // fin activation bouton retour
+   
 }
 // fin creation et affichage modale
 
+function createOptionModal(projetOptionModal) {
+  
+const optgroup = document.getElementById("optgroup")
+ 
+  for (let c = 0; c < projetOptionModal.length; c++) {
+    const option = document.createElement("option");
+    //  console.log(option);
+    option.setAttribute("value", projetOptionModal[c].name);
+    option.innerHTML = projetOptionModal[c].name;
+    optgroup.appendChild(option);
+    
+  }
+}
+
+
+
+  
 async function homePage() {
   works = await getData("http://localhost:5678/api/works");
   category = await getData("http://localhost:5678/api/categories");
   createButton(category);
   createHtml(works);
   createGalleryModal(works);
+  createOptionModal(category);
+ 
 }  
 homePage();
 
@@ -247,4 +288,24 @@ modalTriggers.forEach(trigger => trigger.addEventListener("click", toggleModal))
 
 function toggleModal() {
   modalContainer.classList.toggle("active")
-}
+};
+
+// DEBUT telechargement img dans modale
+const telecharger = document.getElementById("telecharger")
+const telechargementVide = document.querySelector(".telechargementVide");
+const photo = document.querySelector(".photo");
+
+
+telecharger.addEventListener('change', function (e) {
+  const selectedFiles = e.target.files;
+  if (selectedFiles.length > 0) {
+
+    const image = document.createElement("img");
+    image.src = URL.createObjectURL(selectedFiles[0]);
+    photo.appendChild(image);
+    telechargementVide.style.display = "none";
+    photo.style.display = "flex";
+  }
+});
+
+//FIN telechargement img dans modale
