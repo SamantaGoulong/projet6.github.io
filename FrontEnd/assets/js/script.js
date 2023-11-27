@@ -120,10 +120,7 @@ buttonFilter.addEventListener('click', function () {
           galleryElement.remove();
         }
       });
-       
-    
     })
-  
   }
 
     const modal = document.querySelector(".modal")
@@ -167,7 +164,7 @@ const optgroup = document.getElementById("optgroup")
   for (let c = 0; c < projetOptionModal.length; c++) {
     const option = document.createElement("option");
     //  console.log(option);
-    option.setAttribute("value", projetOptionModal[c].name);
+    option.setAttribute("value", projetOptionModal[c].id);
     option.innerHTML = projetOptionModal[c].name;
     optgroup.appendChild(option);
     
@@ -291,21 +288,104 @@ function toggleModal() {
 };
 
 // DEBUT telechargement img dans modale
-const telecharger = document.getElementById("telecharger")
+// const telecharger = document.getElementById("telecharger")
+// const telechargementVide = document.querySelector(".telechargementVide");
+// const photo = document.querySelector(".photo");
+
+
+// telecharger.addEventListener('change', function (e) {
+//   const selectedFiles = e.target.files;
+
+//   if (selectedFiles.length > 0) {
+//     const image = document.createElement("img");
+//     image.src = URL.createObjectURL(selectedFiles[0]);
+//     photo.appendChild(image);
+//     telechargementVide.style.display = "none";
+//     photo.style.display = "flex";
+//   }
+// });
+
+const telecharger = document.getElementById("telecharger");
 const telechargementVide = document.querySelector(".telechargementVide");
 const photo = document.querySelector(".photo");
 
-
 telecharger.addEventListener('change', function (e) {
   const selectedFiles = e.target.files;
-  if (selectedFiles.length > 0) {
 
+  if (selectedFiles.length > 0) {
+    const file = selectedFiles[0];
+
+    // Display the selected image
     const image = document.createElement("img");
-    image.src = URL.createObjectURL(selectedFiles[0]);
+    image.src = URL.createObjectURL(file);
     photo.appendChild(image);
     telechargementVide.style.display = "none";
     photo.style.display = "flex";
+
+    // Send the image to the server
+    // uploadImage(file);
   }
 });
-
 //FIN telechargement img dans modale
+
+//DEBUT activation bouton valider
+const btnValider = document.querySelector("#valider");
+btnValider.addEventListener("click", function (e) {
+e.preventDefault()
+
+  const titre = document.querySelector("#titre")
+  const telecharger = document.querySelector("#telecharger")
+  const categorie = document.querySelector("#categorie")
+  const test = document.querySelector(".champs")
+
+   if (titre.value == "" || telecharger.files.length === 0 || categorie.value == "") {
+     test.style.display = "flex";
+     return false
+  } else {
+    
+ 
+     uploadImage();
+    
+    }
+});
+//FIN activation bouton valider
+
+
+
+// DEBUT envoie de la photo à la base de données
+function uploadImage() {
+  const formData = new FormData();
+  formData.append("title", document.querySelector("#titre").value);
+ 
+ const fileInput = document.querySelector("#telecharger");
+  if (fileInput.files.length > 0) {
+    formData.append("image", fileInput.files[0]);
+    console.log("image", fileInput.files[0]);
+  }
+  
+const selectedCategory = document.querySelector("#categorie");
+  formData.append("category", selectedCategory.value);
+  console.log("category", selectedCategory.value);
+
+
+  fetch("http://localhost:5678/api/works", {
+    method: "POST",
+    headers: {
+      // Remove the Content-Type header to let the browser set it automatically
+      "Authorization": `Bearer ${localStorage.getItem("Token")}`,
+      'Accept': 'application/json',
+    },
+    body: formData,
+  })
+      .then(response => response.json())
+      .then(data => {
+        // Handle the response from the server if needed
+        console.log(data);
+      })
+      .catch(error => {
+        console.error(error);
+      })
+  
+}
+//FIN envoie de la photo à la base de données
+
